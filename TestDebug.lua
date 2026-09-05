@@ -1,28 +1,49 @@
-print("TEST 1: Script started")
+-- ULTRA MINIMAL TEST
+pcall(function()
+	warn("=== RAGDOLL SPAWNER STARTED ===")
+end)
 
-local Players = game:GetService("Players")
-print("TEST 2: Got Players service")
+-- Try direct workspace modification
+pcall(function()
+	local part = Instance.new("Part")
+	part.Name = "TestRagdoll"
+	part.Size = Vector3.new(1, 1, 1)
+	part.Color = Color3.fromRGB(255, 0, 0)
+	part.Parent = workspace
+	warn("PART CREATED")
+end)
 
-local player = Players.LocalPlayer
-print("TEST 3: Got local player: " .. tostring(player))
+-- Try getting player
+pcall(function()
+	local player = game:GetService("Players").LocalPlayer
+	warn("PLAYER: " .. tostring(player.Name))
+end)
 
-if not player.Character then
-	print("TEST 4: No character, waiting...")
-	player.Character:WaitForChild("HumanoidRootPart")
-end
+-- Simple ragdoll creator
+pcall(function()
+	local Players = game:GetService("Players")
+	local player = Players.LocalPlayer
+	
+	if player and player.Character then
+		local hrp = player.Character:FindFirstChild("HumanoidRootPart")
+		if hrp then
+			local ragdoll = Instance.new("Model")
+			ragdoll.Name = "SimpleRagdoll"
+			ragdoll.Parent = workspace
+			
+			local head = Instance.new("Part")
+			head.Name = "Head"
+			head.Shape = Enum.PartType.Ball
+			head.Size = Vector3.new(2, 2, 2)
+			head.CFrame = hrp.CFrame + Vector3.new(0, 5, 0)
+			head.Anchored = true
+			head.CanCollide = false
+			head.Color = Color3.fromRGB(255, 200, 100)
+			head.Parent = ragdoll
+			
+			warn("RAGDOLL CREATED!")
+		end
+	end
+end)
 
-print("TEST 5: Character ready")
-
--- Create a simple test part
-local testPart = Instance.new("Part")
-testPart.Name = "RagdollSpawner_TestPart"
-testPart.Shape = Enum.PartType.Ball
-testPart.Size = Vector3.new(2, 2, 2)
-testPart.Color = Color3.fromRGB(0, 255, 0)
-testPart.Material = Enum.Material.Neon
-testPart.CanCollide = false
-testPart.CFrame = player.Character:FindFirstChild("HumanoidRootPart").CFrame + Vector3.new(0, 10, 0)
-testPart.Parent = workspace
-
-print("TEST 6: Test part created - should see GREEN NEON SPHERE in front of you!")
-print("If you see this message but no sphere, MM2 is blocking part creation")
+warn("=== SCRIPT COMPLETE ===")
